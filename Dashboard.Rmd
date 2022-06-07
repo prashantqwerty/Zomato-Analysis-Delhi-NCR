@@ -1,0 +1,150 @@
+---
+title: "Prashant's Zomato Data Analysis for Delhi NCR business owners"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: rows
+    vertical_layout: fill
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(knitr)
+library(DT)
+library(rpivotTable)
+library(ggplot2)
+library(plotly)
+library(dplyr)
+library(openintro)
+library(highcharter)
+library(ggvis)
+library(leaflet)
+
+```
+
+
+```{r}
+data <- read.csv('C:\\Users\\Rajesh\\Downloads\\DelhiNCR Restaurants.csv',)
+popularfood <- read.csv("C:\\Users\\Rajesh\\Downloads\\cloud kitchen1 - Sheet1.csv")
+populardiningfood <- read.csv("C:\\Users\\Rajesh\\Downloads\\Dining1  - Sheet1.csv")
+populadiningcuisine <-read.csv("C:\\Users\\Rajesh\\Downloads\\Dining1  - Sheet1.csv")
+online<- arrange(data,desc(Delivery_Rating))
+onlinedata <-online[1:100,]
+offline<- arrange(data,desc(Dining_Rating))
+offlinedata <-offline[1:100,]
+boi <- read.csv("C:\\Users\\Rajesh\\Downloads\\bhai plijjj - Sheet1.csv")
+
+```
+
+
+Cloud Kitchen/Delivery oriented
+=====================================
+
+
+Row
+-------------------------------
+
+### Location Pricing for 2 
+
+```{r}
+bxonline<- ggplot(onlinedata) +
+  aes(x = "", y = Pricing_for_2) +
+  geom_boxplot(fill = "#FF5555") +
+  ggthemes::theme_solarized()
+finalcloudbox <- ggplotly(bxonline)
+finalcloudbox
+```
+
+### Popular food items
+
+```{r}
+popularfooditems <- ggplot(popularfood) +
+  aes(x = popular.food, weight = popular.food.count) +
+  geom_bar(fill = "#FF5555") +
+  labs(x = "Food item", y = "Count") +
+  ggthemes::theme_solarized()
+finalpopularonlinefood <- ggplotly(popularfooditems)
+finalpopularonlinefood#here
+```
+
+### Popular Cuisines
+
+```{r}
+popularcuisine <- ggplot(popularfood) +
+  aes(x = Unfiltered.word.count, weight = Occurrences) +
+  geom_bar(fill = "#FF5555") +
+  labs(x = "Cuisine/type", y = "Count") +
+  ggthemes::theme_solarized()
+finalonline <- ggplotly(popularcuisine)
+finalonline
+```
+
+
+Row
+------------------------------------
+### Location
+
+```{r}
+monline <- leaflet(onlinedata)%>% addTiles() %>% addCircleMarkers(lat = onlinedata$Latitude,lng = onlinedata$Longitude,radius = 1, fill= "#FF5555")
+monline
+
+
+```
+
+Dining/ Offline oriented restaurants
+========================================
+
+Row
+-------------------------------
+
+### Pricing for 2
+
+```{r}
+bxoffline<- ggplot(offlinedata) +
+  aes(x = "", y = Pricing_for_2) +
+  geom_boxplot(fill = "#FF5555") +
+  ggthemes::theme_solarized()
+ggplotly(bxoffline)
+finalboxdining <- ggplotly(bxoffline)
+finalboxdining#here
+
+```
+
+### Popular food items
+
+```{r}
+populdiningcuisine1 <- ggplot(populardiningfood) +
+   aes(x = Unfiltered.word.count, weight = Occurrences) +
+  geom_bar(size = 1.5 ,fill = "#FF5555") +
+  ggthemes::theme_solarized()
+ finalpopulardiningcuisine <- ggplotly(populdiningcuisine1)
+finalpopulardiningcuisine
+```
+
+
+
+### Popular food items
+
+```{r}
+populdiningcuisine1 <- ggplot(boi) +
+  aes(x = Unfiltered.word.count, weight = Occurrences) +
+  geom_bar(fill = "#FF5555") +
+  ggthemes::theme_solarized()
+finalpopulardiningcuisine <- ggplotly(populdiningcuisine1)
+finalpopulardiningcuisine
+```
+
+ROW
+-------------------------------
+### Location
+
+```{r}
+moffline <- leaflet(offlinedata)%>% addTiles() %>% addCircleMarkers(lat = offlinedata$Latitude,lng = offlinedata$Longitude,radius = 1,opacity = 1, fill= "red")
+moffline
+```
+
+
+
+
+
+
